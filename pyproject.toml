@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "prometheus-pve-http-sd"
+version = "0.1.0"
+description = "Prometheus HTTP SD for PVE"
+authors = ["Manjusaka <me@manjusaka.me>"]
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "Natural Language :: English",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Utilities",
+]
+[tool.poetry.dependencies]
+python = "^3.12"
+prometheus-client = "^0.18.0"
+pydantic = "^2.5.0"
+loguru = "^0.7.2"
+proxmoxer = "^2.0.1"
+click = "^8.1.7"
+rich-click = "^1.7.1"
+pydantic-settings = "^2.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
