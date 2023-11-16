@@ -1,9 +1,12 @@
 import json
+import shutil
+import tempfile
 import time
 import tomllib
+from os import chmod
 
 import rich_click as click
-from flask import Flask, Response
+from flask import Flask, jsonify, Response
 from loguru import logger
 from pydantic.json import pydantic_encoder
 
@@ -17,11 +20,7 @@ def serve_http(config: Config, discovery: Discovery):
     @app.route("/targets")
     def targets():
         hosts = discovery.discovery()
-        return Response(
-            json.dumps(hosts.hosts, default=pydantic_encoder),
-            mimetype="application/json",
-            status=200,
-        )
+        return jsonify([host.to_sd_json() for host in hosts.hosts])
 
     app.run(host=config.http_address, port=config.http_port)
 
@@ -29,8 +28,17 @@ def serve_http(config: Config, discovery: Discovery):
 def serve_file(config: Config, discovery: Discovery):
     while True:
         hosts = discovery.discovery()
-        with open(config.output_file, mode=config.output_file_mode) as f:
-            f.write(json.dumps(hosts.hosts, default=pydantic_encoder))
+        temp_file = tempfile.NamedTemporaryFile(
+            mode="w", prefix="prometheus-pve-sd", delete=False
+        )
+        with temp_file as tf:
+            json.dump([host.to_sd_json() for host in hosts.hosts], tf, indent=4)
+
+        shutil.move(temp_file.name, config.output_file)
+        chmod(
+            config.output_file,
+            int(config.output_file_mode, 8),
+        )
         time.sleep(config.interval)
 
 
