@@ -11,4 +11,6 @@ RUN poetry config virtualenvs.create false \
 
 COPY . /app
 
-CMD ["python", "pphsd/cli.py"]
+RUN poetry install
+
+ENTRYPOINT ["pphsd"]

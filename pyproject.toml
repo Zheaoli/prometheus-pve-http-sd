@@ -16,6 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Utilities",
 ]
+packages = [{ include = "pphsd" }]
 [tool.poetry.dependencies]
 python = "^3.12"
 prometheus-client = "^0.18.0"
@@ -32,3 +33,6 @@ types-requests = "^2.31.0.10"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pphsd = "pphsd.cli:main"
