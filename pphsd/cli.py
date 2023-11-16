@@ -1,15 +1,14 @@
 import json
 import time
-from threading import Thread
-import os
-import rich_click as click
-from loguru import logger
 import tomllib
 
-from pphsd.config import Config, PVEConfig
-from pphsd.discovery import Discovery
-from flask import Flask, jsonify
+import rich_click as click
+from flask import Flask, Response
+from loguru import logger
 from pydantic.json import pydantic_encoder
+
+from pphsd.config import Config
+from pphsd.discovery import Discovery
 
 
 def serve_http(config: Config, discovery: Discovery):
@@ -18,7 +17,11 @@ def serve_http(config: Config, discovery: Discovery):
     @app.route("/targets")
     def targets():
         hosts = discovery.discovery()
-        return json.dumps(hosts.hosts, default=pydantic_encoder), 200
+        return Response(
+            json.dumps(hosts.hosts, default=pydantic_encoder),
+            mimetype="application/json",
+            status=200,
+        )
 
     app.run(host=config.http_address, port=config.http_port)
 
